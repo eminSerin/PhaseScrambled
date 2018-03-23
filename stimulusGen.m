@@ -46,6 +46,7 @@ MAG_AVG = mean(ims,3);  % MAG_AVG average magnitude spectrum of all images in th
 
 %%
 imageType = {'s','f'}; % image types.
+freq = {'04','10'};
 for i = 1: length(imageType)
     imType = imageType{i};
     disp(['Image: ',imType]);
@@ -87,7 +88,7 @@ for i = 1: length(imageType)
     lenCoh = length(coh_set); % Length of coherence set.
     %% Output directory for processed images
     
-    nTrials = 26; % number of trials for each perspective (28 in default)
+    nTrials = 26; % number of trials for each perspective (26 in default)
     disp([int2str(ntarPics),' images in total.']);
     
     % Create Images
@@ -100,47 +101,51 @@ for i = 1: length(imageType)
         % Create mask
         cHSV = picHSV(:,:,:,a);
         mask = createMask(cHSV);
-        
-        for b = 1:nTrials % for each trials
-            
-            % Shows current trial
-            trialWarning = ['Trial: ', num2str(b)];
-            disp(trialWarning)
-            
-            if b < 10
-                cOutputpath = [iOutputpath, cImageType, 'trial_0', num2str(b), filesep];
-            else
-                cOutputpath = [iOutputpath, cImageType, 'trial_', num2str(b), filesep];
-            end
-            
-            if ~exist(cOutputpath, 'dir')
-                mkdir(cOutputpath);
-            end
-            
-            %% Creates images with different coherence values for each trial
-            for c = 1: lenCoh
-                current_coh = coh_set(c); % current coherence.
-                nImg = phaseScrambled(cPic,mask,h,w,MAG_AVG,current_coh);
+        n = 1;
+        for f = 1: length(freq)
+            cFreq = [freq{f}, '_'];
+            for b = 1:nTrials/2 % for each trials
                 
-                %             Write image into jpg file.
-                if c < 10
-                    imwrite(nImg,[cOutputpath, cImageType,'0' num2str(c), '_'...
-                        num2str(round(current_coh*100)), '.jpg'], 'jpg');
+                % Shows current trial
+                trialWarning = ['Trial: ', num2str(n)];
+                disp(trialWarning)
+                
+                if n < 10
+                    cOutputpath = [iOutputpath, cImageType,cFreq, 'trial_0', num2str(n), filesep];
                 else
-                    imwrite(nImg,[cOutputpath, cImageType, num2str(c), '_'...
-                        num2str(round(current_coh*100)), '.jpg'], 'jpg');
+                    cOutputpath = [iOutputpath, cImageType,cFreq, 'trial_', num2str(n), filesep];
                 end
+                
+                if ~exist(cOutputpath, 'dir')
+                    mkdir(cOutputpath);
+                end
+                
+                %% Creates images with different coherence values for each trial
+                for c = 1: lenCoh
+                    for ifreq = 1 : str2double(freq{f})/2
+                        current_coh = coh_set(c); % current coherence.
+                        nImg = phaseScrambled(cPic,mask,h,w,MAG_AVG,current_coh);
+                        
+                        %             Write image into jpg file.
+                        if c < 10
+                            imwrite(nImg,[cOutputpath, cImageType,'0' num2str(c), '_'...
+                                num2str(ifreq),'_', num2str(round(current_coh*100)), '.jpeg'], 'jpeg');
+                        else
+                            imwrite(nImg,[cOutputpath, cImageType, num2str(c), '_'...
+                                ,num2str(ifreq) '_', num2str(round(current_coh*100)), '.jpeg'], 'jpeg');
+                        end
+                    end
+                end
+                n = n + 1;
             end
-            
         end
-        
     end
     toc;
     tic;
 end
 % Noise image pool.
 disp('Noise images are being created.')
-for p = 1: 2000
+for p = 1: 3000
     if mod(p,100) == 0
         disp(['Noise: ', int2str(p)]);
     end
