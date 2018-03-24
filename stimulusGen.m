@@ -1,11 +1,11 @@
 %% Description
 
 % New version of script for image generation.
-% Pool for noise (around. 2000 noise images).
+% Pool for noise (around. 3000 noise images).
 % Linear coherence levels with 20 steps.
 % New mask algo based on color thresholding using HSV colors.
 % New better alpha blending algo.
-% Updated on 08.02.2018
+% Updated on 24.03.2018
 
 function [] = stimulusGen()
 tic % start stopwatch
