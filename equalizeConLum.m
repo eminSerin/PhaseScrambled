@@ -6,6 +6,7 @@ function [] = equalizeConLum(subID)
 %   Please write subject ID as input arguement. 
 %   Output image will be saved in new directory called equalizedImages.
 %   Written by Emin Serin (emin.serin@hu-berlin.de)
+%   e.g. equalizeConLum(2);
 
 %% Input
 % Input and output directory. 
