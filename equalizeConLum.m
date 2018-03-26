@@ -11,7 +11,7 @@ function [] = equalizeConLum(subID)
 %% Input
 % Input and output directory. 
 subID = num2str(subID);
-imgPath  = [pwd,filesep,'images', filesep, subID, filesep];
+imgPath  = [pwd,filesep,'raw_images', filesep, subID, filesep];
 outputPath = [pwd,filesep, 'equalizedImages',filesep, subID,filesep];
 
 % Check directory if outputpath exists.
